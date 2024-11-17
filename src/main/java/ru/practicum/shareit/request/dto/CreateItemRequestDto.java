@@ -11,13 +11,7 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-public class ItemRequestDto {
-
-    @NotNull
-    private Integer id;
-
-    @NotNull
-    private Integer requestor;
+public class CreateItemRequestDto {
 
     @NotNull
     @FutureDate
