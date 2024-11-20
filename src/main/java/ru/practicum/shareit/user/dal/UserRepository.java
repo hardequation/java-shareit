@@ -6,7 +6,7 @@ public interface UserRepository {
 
     Boolean contains(Integer id);
 
-    Boolean containsUserWithEmail(String email);
+    Boolean containsByEmail(String email);
 
     User find(Integer id);
 

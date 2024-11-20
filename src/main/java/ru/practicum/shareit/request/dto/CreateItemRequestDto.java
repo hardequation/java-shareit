@@ -1,11 +1,11 @@
 package ru.practicum.shareit.request.dto;
 
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.shareit.validators.FutureDate;
 
 import java.time.LocalDate;
 
@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class CreateItemRequestDto {
 
     @NotNull
-    @FutureDate
+    @Future
     private LocalDate created;
 
     @NotBlank(message = "Request description must not be blank")

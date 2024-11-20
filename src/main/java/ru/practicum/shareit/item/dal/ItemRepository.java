@@ -8,11 +8,11 @@ public interface ItemRepository {
 
     Boolean contains(Integer id);
 
-    Set<Item> findItemsByUserId(Integer userId);
+    Set<Item> findByUserId(Integer userId);
 
     Set<Item> findAll();
 
-    Item findItem(Integer itemId);
+    Item find(Integer itemId);
 
     Item add(Item item);
 

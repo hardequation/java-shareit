@@ -26,25 +26,25 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
-    public Set<Item> getItems(Integer userId) {
+    public Set<Item> getByUser(Integer userId) {
         if (Boolean.FALSE.equals(userRepository.contains(userId))) {
             throw new NotFoundException(USER_NOT_FOUND + userId);
         }
-        return itemRepository.findItemsByUserId(userId);
+        return itemRepository.findByUserId(userId);
     }
 
     public Set<Item> findAll() {
         return itemRepository.findAll();
     }
 
-    public Item getItem(Integer itemId) {
+    public Item get(Integer itemId) {
         if (Boolean.FALSE.equals(itemRepository.contains(itemId))) {
             throw new NotFoundException(ITEM_NOT_FOUND + itemId);
         }
-        return itemRepository.findItem(itemId);
+        return itemRepository.find(itemId);
     }
 
-    public Item addNewItem(Item item) {
+    public Item add(Item item) {
         Integer ownerId = item.getOwner();
         if (Boolean.FALSE.equals(userRepository.contains(ownerId))) {
             throw new NotFoundException(USER_NOT_FOUND + ownerId);
@@ -53,18 +53,18 @@ public class ItemService {
         return itemRepository.add(item);
     }
 
-    public Item updateNewItem(Integer requestor, Integer itemId, Item newItem) {
+    public Item update(Integer requestor, Integer itemId, Item newItem) {
         if (Boolean.FALSE.equals(itemRepository.contains(itemId))) {
             throw new NotFoundException(ITEM_NOT_FOUND + itemId);
         }
-        Item updatedItem = itemRepository.findItem(itemId);
+        Item updatedItem = itemRepository.find(itemId);
         if (!Objects.equals(updatedItem.getOwner(), requestor)) {
             throw new AuthentificationException("Item can be updated only by owner");
         }
         return itemRepository.update(newItem);
     }
 
-    public void removeItem(Integer itemId) {
+    public void remove(Integer itemId) {
         if (Boolean.FALSE.equals(itemRepository.contains(itemId))) {
             throw new NotFoundException(ITEM_NOT_FOUND + itemId);
         }
@@ -72,7 +72,7 @@ public class ItemService {
     }
 
     public Set<Item> search(String text) {
-        if (text == null || text.isBlank()) {
+        if (text.isBlank()) {
             return Collections.emptySet();
         }
         return itemRepository.search(text);

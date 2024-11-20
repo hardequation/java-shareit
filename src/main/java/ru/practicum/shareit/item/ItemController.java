@@ -25,16 +25,17 @@ import java.util.stream.Collectors;
 @RequestMapping("/items")
 @RequiredArgsConstructor
 public class ItemController {
+    private static final String HEADER_USER_PARAMETER = "X-Sharer-User-Id";
 
     private final ItemService itemService;
 
     private final ItemMapper itemMapper;
 
     @GetMapping
-    public Set<ItemDto> getAllItems(@RequestHeader(value = "X-Sharer-User-Id", required = false) Integer userId) {
+    public Set<ItemDto> getAll(@RequestHeader(value = HEADER_USER_PARAMETER) Integer userId) {
         Set<Item> items;
         if (userId != null) {
-            items = itemService.getItems(userId);
+            items = itemService.getByUser(userId);
         } else {
             items = itemService.findAll();
         }
@@ -44,32 +45,32 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItem(@PathVariable Integer itemId) {
-        Item item = itemService.getItem(itemId);
+    public ItemDto get(@PathVariable Integer itemId) {
+        Item item = itemService.get(itemId);
         return itemMapper.map(item);
     }
 
     @PostMapping
-    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Integer userId, @Valid @RequestBody CreateItemDto itemDto) {
+    public ItemDto add(@RequestHeader(HEADER_USER_PARAMETER) Integer userId, @Valid @RequestBody CreateItemDto itemDto) {
         Item item = itemMapper.map(itemDto, userId);
-        Item addedItem = itemService.addNewItem(item);
+        Item addedItem = itemService.add(item);
         return itemMapper.map(addedItem);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                              @PathVariable Integer itemId,
-                              @Valid @RequestBody UpdateItemDto newItemDto) {
+    public ItemDto update(@RequestHeader(HEADER_USER_PARAMETER) Integer userId,
+                          @PathVariable Integer itemId,
+                          @Valid @RequestBody UpdateItemDto newItemDto) {
         if (newItemDto == null) {
             throw new ValidationException("No fields in item, that are going to be updated");
         }
         Item item = itemMapper.map(newItemDto, itemId);
-        Item updatedItem = itemService.updateNewItem(userId, itemId, item);
+        Item updatedItem = itemService.update(userId, itemId, item);
         return itemMapper.map(updatedItem);
     }
 
     @GetMapping("/search")
-    public Set<ItemDto> search(@RequestHeader("X-Sharer-User-Id") Integer userId,
+    public Set<ItemDto> search(@RequestHeader(HEADER_USER_PARAMETER) Integer userId,
                                @RequestParam() String text) {
         return itemService.search(text).stream()
                 .map(itemMapper::map)
@@ -77,8 +78,8 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    public void removeItem(@PathVariable(name = "itemId") Integer itemId) {
-        itemService.removeItem(itemId);
+    public void remove(@PathVariable(name = "itemId") Integer itemId) {
+        itemService.remove(itemId);
     }
 
 }

@@ -16,7 +16,7 @@ public class UserService {
     private static int idCounter = 0;
     private final UserRepository userRepository;
 
-    public User getUser(int id) {
+    public User get(int id) {
         if (Boolean.FALSE.equals(userRepository.contains(id))) {
             throw new NotFoundException(USER_NOT_FOUND + id);
         }
@@ -24,36 +24,35 @@ public class UserService {
     }
 
     public User create(User user) {
-        if (Boolean.TRUE.equals(userRepository.containsUserWithEmail(user.getEmail()))) {
+        if (Boolean.TRUE.equals(userRepository.containsByEmail(user.getEmail()))) {
             throw new ValidationException("User with such email already exists");
         }
         user.setId(getCounter());
         return userRepository.add(user);
     }
 
-    public void removeUser(Integer id) {
+    public void remove(Integer id) {
         if (Boolean.FALSE.equals(userRepository.contains(id))) {
             throw new NotFoundException(USER_NOT_FOUND + id);
         }
         userRepository.remove(id);
     }
 
-    public User updateUser(Integer userId, User newUser) {
+    public User update(Integer userId, User newUser) {
         if (Boolean.FALSE.equals(userRepository.contains(userId))) {
             throw new NotFoundException(USER_NOT_FOUND + userId);
         }
-        if (newUser.getEmail() != null && userRepository.containsUserWithEmail(newUser.getEmail())) {
+        if (Boolean.TRUE.equals(userRepository.containsByEmail(newUser.getEmail()))) {
             throw new ValidationException("User with such email already exists");
         }
         User updatedUser = userRepository.find(userId);
-        if (newUser.getName() != null) {
+        if (newUser.getName() != null && !newUser.getName().isBlank()) {
             updatedUser.setName(newUser.getName());
         }
 
-        if (newUser.getEmail() != null) {
+        if (newUser.getEmail() != null && !newUser.getEmail().isBlank()) {
             updatedUser.setEmail(newUser.getEmail());
         }
-        userRepository.update(updatedUser);
         return updatedUser;
     }
 

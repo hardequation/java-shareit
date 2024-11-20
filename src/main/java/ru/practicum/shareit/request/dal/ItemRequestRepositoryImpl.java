@@ -19,7 +19,7 @@ public class ItemRequestRepositoryImpl implements ItemRequestRepository {
     }
 
     @Override
-    public ItemRequest findRequest(Integer requestId) {
+    public ItemRequest find(Integer requestId) {
         return repository.get(requestId);
     }
 

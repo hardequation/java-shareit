@@ -9,7 +9,7 @@ import java.util.Map;
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 
-    Map<Integer, User> userStorage = new HashMap<>();
+    private Map<Integer, User> userStorage = new HashMap<>();
 
     @Override
     public Boolean contains(Integer id) {
@@ -17,7 +17,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Boolean containsUserWithEmail(String email) {
+    public Boolean containsByEmail(String email) {
         return userStorage.values().stream()
                 .anyMatch(user -> user.getEmail().equals(email));
     }

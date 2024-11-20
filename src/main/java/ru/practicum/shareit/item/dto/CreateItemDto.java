@@ -21,6 +21,4 @@ public class CreateItemDto {
     @NotNull
     private Boolean available;
 
-    private Integer request;
-
 }

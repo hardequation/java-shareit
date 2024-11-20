@@ -27,7 +27,7 @@ public class ItemRequestService {
         if (Boolean.FALSE.equals(repository.contains(requestId))) {
             throw new NotFoundException(REQUEST_NOT_FOUND + requestId);
         }
-        return repository.findRequest(requestId);
+        return repository.find(requestId);
     }
 
     public ItemRequest add(ItemRequest request) {

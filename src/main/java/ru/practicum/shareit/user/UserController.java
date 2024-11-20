@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user;
 
 import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,23 +35,20 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public void removeUser(@PathVariable Integer userId) {
-        userService.removeUser(userId);
+    public void remove(@PathVariable Integer userId) {
+        userService.remove(userId);
     }
 
     @PatchMapping("/{userId}")
-    public UserDto updateUser(@PathVariable Integer userId, @Valid @RequestBody UpdateUserDto userDto) {
-        if (userDto == null) {
-            throw new ValidationException("No fields in request, that are going to be updated");
-        }
+    public UserDto update(@PathVariable Integer userId, @Valid @RequestBody UpdateUserDto userDto) {
         User user = userMapper.map(userDto);
-        User updatedUser = userService.updateUser(userId, user);
+        User updatedUser = userService.update(userId, user);
         return userMapper.map(updatedUser);
     }
 
     @GetMapping("/{id}")
-    public UserDto getUser(@PathVariable int id) {
-        User user = userService.getUser(id);
+    public UserDto get(@PathVariable int id) {
+        User user = userService.get(id);
         return userMapper.map(user);
     }
 

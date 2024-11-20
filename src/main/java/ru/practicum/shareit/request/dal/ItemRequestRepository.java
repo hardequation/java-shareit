@@ -6,7 +6,7 @@ public interface ItemRequestRepository {
 
     Boolean contains(Integer id);
 
-    ItemRequest findRequest(Integer requestId);
+    ItemRequest find(Integer requestId);
 
     ItemRequest add(ItemRequest request);
 
