@@ -4,16 +4,12 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.shareit.booking.model.BookingStatus;
 
 import java.time.LocalDate;
 
 @Data
 @Builder
-public class BookingDto {
-
-    @NotNull
-    private Integer id;
+public class CreateBookingDto {
 
     @NotNull
     private Integer item;
@@ -28,8 +24,5 @@ public class BookingDto {
     @NotNull
     @Future
     private LocalDate end;
-
-    @NotNull
-    private BookingStatus status;
 
 }
