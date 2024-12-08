@@ -1,11 +1,9 @@
 package ru.practicum.shareit.item;
 
 import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.item.dto.CreateItemDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.model.Item;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,45 +30,33 @@ public class ItemController {
     private final ItemMapper itemMapper;
 
     @GetMapping
-    public Set<ItemDto> getAll(@RequestHeader(value = HEADER_USER_PARAMETER) Integer userId) {
-        Set<Item> items;
+    public List<ItemDto> findAll(@RequestHeader(value = HEADER_USER_PARAMETER) Long userId) {
+        List<Item> items;
         if (userId != null) {
-            items = itemService.getByUser(userId);
+            items = itemService.findByOwner(userId);
         } else {
             items = itemService.findAll();
         }
         return items.stream()
                 .map(itemMapper::map)
-                .collect(Collectors.toSet());
+                .toList();
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto get(@PathVariable Integer itemId) {
-        Item item = itemService.get(itemId);
+    public ItemDto findById(@PathVariable Long itemId) {
+        Item item = itemService.findById(itemId);
         return itemMapper.map(item);
     }
 
     @PostMapping
-    public ItemDto add(@RequestHeader(HEADER_USER_PARAMETER) Integer userId, @Valid @RequestBody CreateItemDto itemDto) {
+    public ItemDto save(@RequestHeader(HEADER_USER_PARAMETER) Long userId, @Valid @RequestBody CreateItemDto itemDto) {
         Item item = itemMapper.map(itemDto, userId);
-        Item addedItem = itemService.add(item);
+        Item addedItem = itemService.save(item);
         return itemMapper.map(addedItem);
     }
 
-    @PatchMapping("/{itemId}")
-    public ItemDto update(@RequestHeader(HEADER_USER_PARAMETER) Integer userId,
-                          @PathVariable Integer itemId,
-                          @Valid @RequestBody UpdateItemDto newItemDto) {
-        if (newItemDto == null) {
-            throw new ValidationException("No fields in item, that are going to be updated");
-        }
-        Item item = itemMapper.map(newItemDto, itemId);
-        Item updatedItem = itemService.update(userId, itemId, item);
-        return itemMapper.map(updatedItem);
-    }
-
     @GetMapping("/search")
-    public Set<ItemDto> search(@RequestHeader(HEADER_USER_PARAMETER) Integer userId,
+    public Set<ItemDto> search(@RequestHeader(HEADER_USER_PARAMETER) Long userId,
                                @RequestParam() String text) {
         return itemService.search(text).stream()
                 .map(itemMapper::map)
@@ -78,8 +64,8 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    public void remove(@PathVariable(name = "itemId") Integer itemId) {
-        itemService.remove(itemId);
+    public void deleteById(@PathVariable(name = "itemId") Long itemId) {
+        itemService.deleteById(itemId);
     }
 
 }

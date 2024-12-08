@@ -8,7 +8,7 @@ import lombok.Data;
 @Builder
 public class ItemDto {
 
-    private Integer id;
+    private Long id;
 
     private Integer owner;
 

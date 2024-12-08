@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class BookingDto {
 
     @NotNull
-    private Integer id;
+    private Long id;
 
     @NotNull
     private Integer item;

@@ -1,17 +1,16 @@
 package ru.practicum.shareit.request.dal;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
 
-public interface ItemRequestRepository {
+import java.util.Optional;
 
-    Boolean contains(Integer id);
+public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> {
 
-    ItemRequest find(Integer requestId);
+    Optional<ItemRequest> findById(Long requestId);
 
-    ItemRequest add(ItemRequest request);
+    ItemRequest save(ItemRequest request);
 
-    ItemRequest update(ItemRequest request);
-
-    void remove(Integer id);
+    void deleteById(Long id);
 
 }

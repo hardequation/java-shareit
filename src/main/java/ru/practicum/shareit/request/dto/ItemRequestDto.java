@@ -14,10 +14,10 @@ import java.time.LocalDate;
 public class ItemRequestDto {
 
     @NotNull
-    private Integer id;
+    private Long id;
 
     @NotNull
-    private Integer requestor;
+    private Long requestor;
 
     @NotNull
     @Future
