@@ -20,14 +20,14 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long owner;
-
     private String name;
 
     private String description;
 
     private Boolean available;
 
-    private Integer request;
+    private Long owner;
+
+    private Long request;
 
 }

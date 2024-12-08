@@ -49,8 +49,8 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto save(@RequestHeader(HEADER_USER_PARAMETER) Long userId, @Valid @RequestBody CreateItemDto itemDto) {
-        Item item = itemMapper.map(itemDto, userId);
+    public ItemDto save(@RequestHeader(HEADER_USER_PARAMETER) Long ownerId, @Valid @RequestBody CreateItemDto itemDto) {
+        Item item = itemMapper.map(itemDto, ownerId);
         Item addedItem = itemService.save(item);
         return itemMapper.map(addedItem);
     }
