@@ -1,14 +1,13 @@
 package ru.practicum.shareit.item.model;
 
-
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,36 +16,27 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 
 @Data
 @Entity
-@Table(name = "items", schema = "public")
+@Table(name = "comments", schema = "public")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Item {
-
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
-    private String description;
-
-    private Boolean available;
-
     @ManyToOne
-    @JoinColumn(name = "owner")
-    private User owner;
+    @JoinColumn(name = "item_id", nullable = false)
+    private Item item;
 
-    private Long request;
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();;
+    private String text;
 
+    private LocalDate created;
 }

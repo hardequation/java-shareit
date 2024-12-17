@@ -6,6 +6,8 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dal.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
+import java.util.Optional;
+
 import static ru.practicum.shareit.exception.ErrorMessages.USER_NOT_FOUND;
 
 @Service
@@ -14,8 +16,8 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND + id));
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
     }
 
     public User save(User user) {
