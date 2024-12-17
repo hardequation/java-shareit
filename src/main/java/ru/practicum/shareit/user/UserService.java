@@ -2,13 +2,10 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dal.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.Optional;
-
-import static ru.practicum.shareit.exception.ErrorMessages.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor

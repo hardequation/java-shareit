@@ -3,7 +3,6 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import ru.practicum.shareit.booking.dal.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
@@ -16,7 +15,6 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dal.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
-import javax.swing.text.html.Option;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;

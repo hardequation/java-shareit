@@ -3,7 +3,6 @@ package ru.practicum.shareit.booking;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,7 +47,7 @@ public class BookingController {
 
     @PostMapping
     BookingDto create(@RequestHeader(HEADER_USER_PARAMETER) Long bookerId,
-                    @Valid @RequestBody CreateBookingDto dto) {
+                      @Valid @RequestBody CreateBookingDto dto) {
         if (!dto.getStart().isBefore(dto.getEnd())) {
             throw new WrongRequirementsException("Start date of booking should be before end date");
         }
@@ -110,7 +109,7 @@ public class BookingController {
         List<Booking> bookings = bookingService.findByBooker(user, state);
         List<BookingDto> bookingDtoList = new ArrayList<>();
 
-        for (Booking booking: bookings) {
+        for (Booking booking : bookings) {
             bookingDtoList.add(bookingMapper.map(booking));
         }
         return bookingDtoList;
@@ -124,7 +123,7 @@ public class BookingController {
         List<Booking> bookings = bookingService.findByOwner(owner, state);
         List<BookingDto> bookingDtoList = new ArrayList<>();
 
-        for (Booking booking: bookings) {
+        for (Booking booking : bookings) {
             bookingDtoList.add(bookingMapper.map(booking));
         }
         return bookingDtoList;

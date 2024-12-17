@@ -36,8 +36,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "AND b.end < CURRENT_TIMESTAMP " +
             "ORDER BY b.start ASC")
     List<Booking> findByBookerAndItemAndStatus(@Param("booker") User booker,
-                                      @Param("item") Item item,
-                                      @Param("status") BookingStatus status);
+                                               @Param("item") Item item,
+                                               @Param("status") BookingStatus status);
 
     @Query("SELECT b FROM Booking b " +
             "JOIN Item i ON b.item.id = i.id " +

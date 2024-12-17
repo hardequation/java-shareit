@@ -36,7 +36,7 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, WrongRequirementsException.class })
+    @ExceptionHandler({MethodArgumentNotValidException.class, WrongRequirementsException.class})
     public ResponseEntity<Map<String, String>> handleArgumentException(RuntimeException ex) {
         log.debug("Validation error: {}", ex.getMessage());
         Map<String, String> errorResponse = new HashMap<>();
