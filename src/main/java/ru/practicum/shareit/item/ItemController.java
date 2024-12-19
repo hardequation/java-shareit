@@ -48,52 +48,30 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> findAll(@RequestHeader(value = HEADER_USER_PARAMETER) Long userId) {
-        List<Item> items;
-        if (userId != null) {
-            items = itemService.findByOwner(userId);
-        } else {
-            items = itemService.findAll();
-        }
-        return items.stream()
-                .map(itemMapper::map)
-                .toList();
+        return itemService.findAll(userId);
     }
 
     @GetMapping("/{itemId}")
     public ItemDto findById(@PathVariable Long itemId) {
-        Item item = itemService.findById(itemId).orElseThrow(() -> new NotFoundException(ITEM_NOT_FOUND + itemId));
-        return itemMapper.map(item);
+        return itemService.findById(itemId);
     }
 
     @PostMapping
     public ItemDto save(@RequestHeader(HEADER_USER_PARAMETER) Long ownerId, @Valid @RequestBody CreateItemDto itemDto) {
-        User owner = userService.findById(ownerId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND + ownerId));
-        Item item = itemMapper.map(itemDto, owner);
-        Item addedItem = itemService.save(item);
-        return itemMapper.map(addedItem);
+        return itemService.save(ownerId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto update(@RequestHeader(HEADER_USER_PARAMETER) Long userId,
                           @PathVariable long itemId,
                           @Valid @RequestBody UpdateItemDto dto) {
-        Item oldItem = itemService.findById(itemId).orElseThrow(() -> new NotFoundException(ITEM_NOT_FOUND + itemId));
-        if (!oldItem.getOwner().getId().equals(userId)) {
-            throw new AuthentificationException("Only owner can update item");
-        }
-        Item item = itemMapper.map(dto, itemId, oldItem);
-
-        item.setOwner(oldItem.getOwner());
-        Item addedItem = itemService.save(item);
-        return itemMapper.map(addedItem);
+        return itemService.save(userId, itemId, dto);
     }
 
     @GetMapping("/search")
-    public Set<ItemDto> search(@RequestHeader(HEADER_USER_PARAMETER) Long userId,
+    public List<ItemDto> search(@RequestHeader(HEADER_USER_PARAMETER) Long userId,
                                @RequestParam() String text) {
-        return itemService.search(text).stream()
-                .map(itemMapper::map)
-                .collect(Collectors.toSet());
+        return itemService.search(text);
     }
 
     @DeleteMapping("/{itemId}")
@@ -105,18 +83,7 @@ public class ItemController {
     public CommentDto commentItem(@RequestHeader(HEADER_USER_PARAMETER) Long userId,
                                   @PathVariable(name = "itemId") Long itemId,
                                   @RequestBody CreateCommentDto commentDto) {
-
-        Item item = itemService.findById(itemId).orElseThrow(() -> new NotFoundException(ITEM_NOT_FOUND + itemId));
-        User user = userService.findById(userId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND + userId));
-        Comment comment = Comment.builder()
-                .item(item)
-                .user(user)
-                .text(commentDto.getText())
-                .created(LocalDate.now())
-                .build();
-
-        itemService.commentItem(comment);
-        return commentMapper.map(comment);
+        return itemService.commentItem(userId, itemId, commentDto);
     }
 
 }

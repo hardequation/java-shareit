@@ -12,13 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.CreateUserDto;
 import ru.practicum.shareit.user.dto.UpdateUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
-
-import static ru.practicum.shareit.exception.ErrorMessages.USER_NOT_FOUND;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,17 +28,12 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto create(@Valid @RequestBody CreateUserDto user) {
-        User toCreate = userMapper.map(user);
-        User createdFilm = userService.save(toCreate);
-        return userMapper.map(createdFilm);
+        return userService.save(user);
     }
 
     @PatchMapping("/{userId}")
     public UserDto update(@PathVariable Long userId, @Valid @RequestBody UpdateUserDto userDto) {
-        User oldUser = userService.findById(userId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND + userId));
-        User user = userMapper.map(userDto, userId, oldUser);
-        User updatedUser = userService.save(user);
-        return userMapper.map(updatedUser);
+        return userService.update(userId, userDto);
     }
 
     @DeleteMapping("/{userId}")
@@ -52,8 +43,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public UserDto findById(@PathVariable Long id) {
-        User user = userService.findById(id).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND + id));
-        return userMapper.map(user);
+        return userService.findById(id);
     }
 
 }
