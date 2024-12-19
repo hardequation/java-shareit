@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item;
 
 import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,73 +12,61 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CreateCommentDto;
 import ru.practicum.shareit.item.dto.CreateItemDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
-import ru.practicum.shareit.item.model.Item;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
+
+import static ru.practicum.shareit.Constants.HEADER_USER_PARAMETER;
 
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
 public class ItemController {
-    private static final String HEADER_USER_PARAMETER = "X-Sharer-User-Id";
 
     private final ItemService itemService;
 
-    private final ItemMapper itemMapper;
-
     @GetMapping
-    public Set<ItemDto> getAll(@RequestHeader(value = HEADER_USER_PARAMETER) Integer userId) {
-        Set<Item> items;
-        if (userId != null) {
-            items = itemService.getByUser(userId);
-        } else {
-            items = itemService.findAll();
-        }
-        return items.stream()
-                .map(itemMapper::map)
-                .collect(Collectors.toSet());
+    public List<ItemDto> findAll(@RequestHeader(value = HEADER_USER_PARAMETER) Long userId) {
+        return itemService.findAll(userId);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto get(@PathVariable Integer itemId) {
-        Item item = itemService.get(itemId);
-        return itemMapper.map(item);
+    public ItemDto findById(@PathVariable Long itemId) {
+        return itemService.findById(itemId);
     }
 
     @PostMapping
-    public ItemDto add(@RequestHeader(HEADER_USER_PARAMETER) Integer userId, @Valid @RequestBody CreateItemDto itemDto) {
-        Item item = itemMapper.map(itemDto, userId);
-        Item addedItem = itemService.add(item);
-        return itemMapper.map(addedItem);
+    public ItemDto save(@RequestHeader(HEADER_USER_PARAMETER) Long ownerId, @Valid @RequestBody CreateItemDto itemDto) {
+        return itemService.save(ownerId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@RequestHeader(HEADER_USER_PARAMETER) Integer userId,
-                          @PathVariable Integer itemId,
-                          @Valid @RequestBody UpdateItemDto newItemDto) {
-        if (newItemDto == null) {
-            throw new ValidationException("No fields in item, that are going to be updated");
-        }
-        Item item = itemMapper.map(newItemDto, itemId);
-        Item updatedItem = itemService.update(userId, itemId, item);
-        return itemMapper.map(updatedItem);
+    public ItemDto update(@RequestHeader(HEADER_USER_PARAMETER) Long userId,
+                          @PathVariable long itemId,
+                          @Valid @RequestBody UpdateItemDto dto) {
+        return itemService.save(userId, itemId, dto);
     }
 
     @GetMapping("/search")
-    public Set<ItemDto> search(@RequestHeader(HEADER_USER_PARAMETER) Integer userId,
-                               @RequestParam() String text) {
-        return itemService.search(text).stream()
-                .map(itemMapper::map)
-                .collect(Collectors.toSet());
+    public List<ItemDto> search(@RequestHeader(HEADER_USER_PARAMETER) Long userId,
+                                @RequestParam() String text) {
+        return itemService.search(text);
     }
 
     @DeleteMapping("/{itemId}")
-    public void remove(@PathVariable(name = "itemId") Integer itemId) {
-        itemService.remove(itemId);
+    public void deleteById(@PathVariable(name = "itemId") Long itemId) {
+        itemService.deleteById(itemId);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto commentItem(@RequestHeader(HEADER_USER_PARAMETER) Long userId,
+                                  @PathVariable(name = "itemId") Long itemId,
+                                  @RequestBody CreateCommentDto commentDto) {
+        return itemService.commentItem(userId, itemId, commentDto);
     }
 
 }

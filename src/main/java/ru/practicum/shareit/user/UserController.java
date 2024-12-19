@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.user.dto.CreateUserDto;
 import ru.practicum.shareit.user.dto.UpdateUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,27 +28,22 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto create(@Valid @RequestBody CreateUserDto user) {
-        User toCreate = userMapper.map(user);
-        User createdFilm = userService.create(toCreate);
-        return userMapper.map(createdFilm);
-    }
-
-    @DeleteMapping("/{userId}")
-    public void remove(@PathVariable Integer userId) {
-        userService.remove(userId);
+        return userService.save(user);
     }
 
     @PatchMapping("/{userId}")
-    public UserDto update(@PathVariable Integer userId, @Valid @RequestBody UpdateUserDto userDto) {
-        User user = userMapper.map(userDto);
-        User updatedUser = userService.update(userId, user);
-        return userMapper.map(updatedUser);
+    public UserDto update(@PathVariable Long userId, @Valid @RequestBody UpdateUserDto userDto) {
+        return userService.update(userId, userDto);
+    }
+
+    @DeleteMapping("/{userId}")
+    public void deleteById(@PathVariable Long userId) {
+        userService.deleteById(userId);
     }
 
     @GetMapping("/{id}")
-    public UserDto get(@PathVariable int id) {
-        User user = userService.get(id);
-        return userMapper.map(user);
+    public UserDto findById(@PathVariable Long id) {
+        return userService.findById(id);
     }
 
 }

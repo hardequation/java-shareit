@@ -13,12 +13,15 @@ import java.time.LocalDate;
 @Builder
 public class CreateItemRequestDto {
 
+    @NotBlank(message = "Request description must not be blank")
+    @Size(max = 500)
+    private String description;
+
+    @NotNull
+    private Long requestor;
+
     @NotNull
     @Future
     private LocalDate created;
-
-    @NotBlank(message = "Request description must not be blank")
-    @Size(max = 500)
-    private String desciption;
 
 }
