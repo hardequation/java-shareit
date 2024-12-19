@@ -24,8 +24,6 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.exception.ErrorMessages.ITEM_NOT_FOUND;
 import static ru.practicum.shareit.exception.ErrorMessages.USER_NOT_FOUND;

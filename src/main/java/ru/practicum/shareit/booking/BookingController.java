@@ -47,7 +47,7 @@ public class BookingController {
 
     @GetMapping
     List<BookingDto> findByBookerAndState(@RequestHeader(HEADER_USER_PARAMETER) Long bookerId,
-                                        @RequestParam(defaultValue = "ALL") BookingState state) {
+                                          @RequestParam(defaultValue = "ALL") BookingState state) {
         return bookingService.findByBookerAndState(bookerId, state);
     }
 
