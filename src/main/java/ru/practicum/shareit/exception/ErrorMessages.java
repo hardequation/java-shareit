@@ -8,4 +8,6 @@ public final class ErrorMessages {
 
     public static final String USER_NOT_FOUND = "There is no user with such id: ";
 
+    public static final String BOOKING_NOT_FOUND = "There is no booking with such id: ";
+
 }

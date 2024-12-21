@@ -16,10 +16,11 @@ public class UserMapper {
                 .build();
     }
 
-    public final User map(UpdateUserDto dto) {
+    public final User map(UpdateUserDto dto, Long userId, User oldUser) {
         return User.builder()
-                .name(dto.getName())
-                .email(dto.getEmail())
+                .id(userId)
+                .name(dto.getName() != null ? dto.getName() : oldUser.getName())
+                .email(dto.getEmail() != null ? dto.getEmail() : oldUser.getEmail())
                 .build();
     }
 

@@ -1,4 +1,5 @@
-package ru.practicum.shareit.user.model;
+package ru.practicum.shareit.request.model;
+
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,19 +11,24 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Getter
 @Entity
-@Table(name = "users", schema = "public")
 @Builder
+@Table(name = "requests", schema = "public")
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Request {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String description;
 
-    private String email;
+    private Long requestor;
+
+    private LocalDate created;
+
 }

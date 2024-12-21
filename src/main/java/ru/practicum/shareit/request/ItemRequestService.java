@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.request.dal.ItemRequestRepository;
-import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.model.Request;
 
 import static ru.practicum.shareit.exception.ErrorMessages.REQUEST_NOT_FOUND;
 
@@ -12,45 +12,18 @@ import static ru.practicum.shareit.exception.ErrorMessages.REQUEST_NOT_FOUND;
 @RequiredArgsConstructor
 public class ItemRequestService {
 
-    private static int idCounter = 0;
     ItemRequestRepository repository;
 
-    public Boolean contains(Integer requestId) {
-        if (Boolean.FALSE.equals(repository.contains(requestId))) {
-            throw new NotFoundException(REQUEST_NOT_FOUND + requestId);
-        }
-        return repository.contains(requestId);
+
+    public Request findById(Long requestId) {
+        return repository.findById(requestId).orElseThrow(() -> new NotFoundException(REQUEST_NOT_FOUND + requestId));
     }
 
-
-    public ItemRequest findRequest(Integer requestId) {
-        if (Boolean.FALSE.equals(repository.contains(requestId))) {
-            throw new NotFoundException(REQUEST_NOT_FOUND + requestId);
-        }
-        return repository.find(requestId);
+    public Request save(Request request) {
+        return repository.save(request);
     }
 
-    public ItemRequest add(ItemRequest request) {
-        request.setId(getCounter());
-        return repository.add(request);
-    }
-
-    public ItemRequest update(ItemRequest request) {
-        Integer requestId = request.getId();
-        if (Boolean.FALSE.equals(repository.contains(requestId))) {
-            throw new NotFoundException(REQUEST_NOT_FOUND + requestId);
-        }
-        return repository.update(request);
-    }
-
-    public void remove(Integer requestId) {
-        if (Boolean.FALSE.equals(repository.contains(requestId))) {
-            throw new NotFoundException(REQUEST_NOT_FOUND + requestId);
-        }
-        repository.remove(requestId);
-    }
-
-    private synchronized int getCounter() {
-        return ++idCounter;
+    public void deleteById(Long requestId) {
+        repository.deleteById(requestId);
     }
 }
