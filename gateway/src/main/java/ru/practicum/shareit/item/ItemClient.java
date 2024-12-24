@@ -8,8 +8,9 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
-import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.CreateCommentDto;
+import ru.practicum.shareit.item.dto.CreateItemDto;
+import ru.practicum.shareit.item.dto.UpdateItemDto;
 
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import java.util.Map;
 public class ItemClient extends BaseClient {
 
     private static final String API_PREFIX = "/items";
+
     @Autowired
     public ItemClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
@@ -35,11 +37,11 @@ public class ItemClient extends BaseClient {
         return get("/" + itemId, userId);
     }
 
-    public ResponseEntity<Object> createItem(long userId, ItemDto itemDto) {
+    public ResponseEntity<Object> createItem(long userId, CreateItemDto itemDto) {
         return post("", userId, itemDto);
     }
 
-    public ResponseEntity<Object> updateItem(long userId, long itemId, ItemDto itemDto) {
+    public ResponseEntity<Object> updateItem(long userId, long itemId, UpdateItemDto itemDto) {
         return patch("/" + itemId, userId, itemDto);
     }
 
@@ -47,14 +49,14 @@ public class ItemClient extends BaseClient {
         Map<String, Object> params = Map.of(
                 "text", text
         );
-        return get("/search", userId, params);
+        return get("/search?text={text}", userId, params);
     }
 
     public ResponseEntity<Object> deleteById(long userId, long itemId) {
         return delete("/" + itemId, userId);
     }
 
-    public ResponseEntity<Object> commentItem(long userId, long itemId, CommentDto itemDto) {
+    public ResponseEntity<Object> commentItem(long userId, long itemId, CreateCommentDto itemDto) {
         return post("/" + itemId + "/comment", userId, itemDto);
     }
 }

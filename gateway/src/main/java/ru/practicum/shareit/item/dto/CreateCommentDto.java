@@ -7,21 +7,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentDto {
-
-    private Integer id;
+public class CreateCommentDto {
 
     @Size(max = 500)
     @NotBlank(message = "Comment text must not be blank")
     private String text;
 
-    private String authorName;
+//    private String authorName;
 
-    private LocalDateTime created;
+//    private LocalDateTime created;
 }

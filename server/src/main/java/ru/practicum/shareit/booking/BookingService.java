@@ -35,12 +35,12 @@ public class BookingService {
 
     private final BookingMapper bookingMapper;
 
-    public BookingDto save(CreateBookingDto dto, Long bookerId) {
+    public BookingDto save(CreateBookingDto dto, Long userId) {
         if (!dto.getStart().isBefore(dto.getEnd())) {
             throw new WrongRequirementsException("Start date of booking should be before end date");
         }
 
-        User booker = userRepository.findById(bookerId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND + bookerId));
+        User booker = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND + userId));
 
         Long itemId = dto.getItemId();
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException(ITEM_NOT_FOUND + itemId));

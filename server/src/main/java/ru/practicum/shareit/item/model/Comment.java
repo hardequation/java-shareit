@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.user.model.User;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -37,5 +37,5 @@ public class Comment {
 
     private String text;
 
-    private LocalDate created;
+    private LocalDateTime created;
 }

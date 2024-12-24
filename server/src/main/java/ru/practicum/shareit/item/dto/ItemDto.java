@@ -1,14 +1,22 @@
 package ru.practicum.shareit.item.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-@Data
+@Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ItemDto {
+
+    private static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
     private Long id;
 
@@ -22,10 +30,20 @@ public class ItemDto {
 
     private Long request;
 
+    @JsonFormat(pattern = FORMAT)
     private LocalDateTime lastBooking;
 
+    @JsonFormat(pattern = FORMAT)
     private LocalDateTime nextBooking;
 
     private List<String> comments;
+
+    public String formatLastBooking() {
+        return lastBooking.format(DateTimeFormatter.ofPattern(FORMAT));
+    }
+
+    public String formatNextBooking() {
+        return nextBooking.format(DateTimeFormatter.ofPattern(FORMAT));
+    }
 
 }

@@ -10,4 +10,6 @@ public final class ErrorMessages {
 
     public static final String BOOKING_NOT_FOUND = "There is no booking with such id: ";
 
+    public static final String NOT_AUTHENTICATED_USER = "Only user can make requests";
+
 }

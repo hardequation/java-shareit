@@ -21,7 +21,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dal.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -69,7 +69,7 @@ public class ItemService {
         return itemMapper.map(item);
     }
 
-    public ItemDto save(Long ownerId, CreateItemDto itemDto) {
+    public ItemDto create(Long ownerId, CreateItemDto itemDto) {
         User owner = userRepository.findById(ownerId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND + ownerId));
         Item item = itemMapper.map(itemDto, owner);
         Item addedItem = itemRepository.save(item);
@@ -79,7 +79,7 @@ public class ItemService {
         return itemMapper.map(addedItem);
     }
 
-    public ItemDto save(Long ownerId, Long itemId, UpdateItemDto itemDto) {
+    public ItemDto update(Long ownerId, Long itemId, UpdateItemDto itemDto) {
         Item oldItem = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException(ITEM_NOT_FOUND + itemId));
         if (!oldItem.getOwner().getId().equals(ownerId)) {
             throw new AuthentificationException("Only owner can update item");
@@ -119,7 +119,7 @@ public class ItemService {
                 .item(item)
                 .user(user)
                 .text(commentDto.getText())
-                .created(LocalDate.now())
+                .created(LocalDateTime.now())
                 .build();
         List<Booking> bookings = bookingRepository.findByBookerAndItemAndStatus(
                 comment.getUser(),

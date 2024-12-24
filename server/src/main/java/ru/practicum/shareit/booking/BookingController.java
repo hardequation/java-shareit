@@ -30,7 +30,7 @@ public class BookingController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     BookingDto createBooking(
-            @RequestHeader(HEADER_USER_PARAMETER) Long bookerId,
+            @RequestHeader(HEADER_USER_PARAMETER) long bookerId,
             @RequestBody CreateBookingDto dto) {
         return bookingService.save(dto, bookerId);
     }

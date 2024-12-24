@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.Constants;
-import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.CreateCommentDto;
+import ru.practicum.shareit.item.dto.CreateItemDto;
+import ru.practicum.shareit.item.dto.UpdateItemDto;
 
 import static ru.practicum.shareit.Constants.HEADER_USER_PARAMETER;
 
@@ -42,7 +43,7 @@ public class ItemController {
     @PostMapping
     public ResponseEntity<Object> createItem(
             @RequestHeader(Constants.HEADER_USER_PARAMETER) Long ownerId,
-            @Valid @RequestBody ItemDto itemDto) {
+            @Valid @RequestBody CreateItemDto itemDto) {
         return itemClient.createItem(ownerId, itemDto);
     }
 
@@ -50,14 +51,14 @@ public class ItemController {
     public ResponseEntity<Object> updateItem(
             @RequestHeader(Constants.HEADER_USER_PARAMETER) Long userId,
             @PathVariable long itemId,
-            @Valid @RequestBody ItemDto dto) {
+            @Valid @RequestBody UpdateItemDto dto) {
         return itemClient.updateItem(userId, itemId, dto);
     }
 
     @GetMapping("/search")
     public ResponseEntity<Object> search(
             @RequestHeader(Constants.HEADER_USER_PARAMETER) Long userId,
-            @RequestParam() String text) {
+            @RequestParam(name = "text") String text) {
         return itemClient.search(userId, text);
     }
 
@@ -71,7 +72,7 @@ public class ItemController {
     public ResponseEntity<Object> commentItem(
             @RequestHeader(Constants.HEADER_USER_PARAMETER) Long userId,
             @PathVariable(name = "itemId") Long itemId,
-            @RequestBody CommentDto commentDto) {
+            @RequestBody CreateCommentDto commentDto) {
         return itemClient.commentItem(userId, itemId, commentDto);
     }
 

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.Constants;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -38,16 +40,17 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto save(@RequestHeader(Constants.HEADER_USER_PARAMETER) Long ownerId,
-                        @RequestBody CreateItemDto itemDto) {
-        return itemService.save(ownerId, itemDto);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ItemDto create(@RequestHeader(Constants.HEADER_USER_PARAMETER) Long ownerId,
+                          @RequestBody CreateItemDto itemDto) {
+        return itemService.create(ownerId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto update(@RequestHeader(Constants.HEADER_USER_PARAMETER) Long userId,
                           @PathVariable long itemId,
                           @RequestBody UpdateItemDto dto) {
-        return itemService.save(userId, itemId, dto);
+        return itemService.update(userId, itemId, dto);
     }
 
     @GetMapping("/search")
@@ -57,12 +60,14 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@RequestHeader(Constants.HEADER_USER_PARAMETER) Long userId,
                            @PathVariable(name = "itemId") Long itemId) {
         itemService.deleteById(itemId);
     }
 
     @PostMapping("/{itemId}/comment")
+    @ResponseStatus(HttpStatus.CREATED)
     public CommentDto commentItem(@RequestHeader(Constants.HEADER_USER_PARAMETER) Long userId,
                                   @PathVariable(name = "itemId") Long itemId,
                                   @RequestBody CreateCommentDto commentDto) {

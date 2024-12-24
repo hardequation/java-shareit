@@ -35,6 +35,6 @@ public class Request {
     private LocalDateTime created;
 
     @OneToMany(mappedBy = "request", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<RequestReply> replies;
+    private List<RequestReply> items;
 
 }
