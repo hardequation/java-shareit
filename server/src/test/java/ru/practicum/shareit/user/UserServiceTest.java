@@ -22,23 +22,24 @@ import java.util.Optional;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 @Rollback(false)
 @SpringBootTest
-@TestPropertySource(properties = { "jdbc:h2:mem:shareit"})
+@TestPropertySource(properties = {"jdbc:h2:mem:shareit"})
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class UserServiceTest {
 
     @Autowired
+    private final EntityManager em;
+    @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private final EntityManager em;
 
     @Test
     void findByIdSuccess() {

@@ -12,32 +12,29 @@ import ru.practicum.shareit.item.dal.ItemRepository;
 import ru.practicum.shareit.item.dto.CreateItemDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.UserService;
-import ru.practicum.shareit.user.dal.UserRepository;
 import ru.practicum.shareit.user.dto.CreateUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Transactional
 @Rollback(false)
 @SpringBootTest
-@TestPropertySource(properties = { "jdbc:h2:mem:shareit"})
+@TestPropertySource(properties = {"jdbc:h2:mem:shareit"})
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class ItemServiceTest {
 
     @Autowired
+    private final EntityManager em;
+    @Autowired
     private ItemRepository itemRepository;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private ItemService itemService;
-
-    @Autowired
-    private final EntityManager em;
 
     @Test
     void findByOwner() {
