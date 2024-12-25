@@ -73,13 +73,14 @@ public class ItemService {
         User owner = userRepository.findById(ownerId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND + ownerId));
         Item item = itemMapper.map(itemDto, owner);
         Item addedItem = itemRepository.save(item);
-        if (userRepository.findById(ownerId).isEmpty()) {
-            throw new NotFoundException(USER_NOT_FOUND + ownerId);
-        }
         return itemMapper.map(addedItem);
     }
 
     public ItemDto update(Long ownerId, Long itemId, UpdateItemDto itemDto) {
+        if (userRepository.findById(ownerId).isEmpty()) {
+            throw new NotFoundException(USER_NOT_FOUND + ownerId);
+        }
+
         Item oldItem = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException(ITEM_NOT_FOUND + itemId));
         if (!oldItem.getOwner().getId().equals(ownerId)) {
             throw new AuthentificationException("Only owner can update item");
@@ -88,9 +89,6 @@ public class ItemService {
 
         item.setOwner(oldItem.getOwner());
         Item addedItem = itemRepository.save(item);
-        if (userRepository.findById(ownerId).isEmpty()) {
-            throw new NotFoundException(USER_NOT_FOUND + ownerId);
-        }
         return itemMapper.map(addedItem);
     }
 

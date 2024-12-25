@@ -18,15 +18,6 @@ public class ErrorHandler {
 
     private static final String MESSAGE = "message";
 
-//    @ExceptionHandler(NotFoundException.class)
-//    public ResponseEntity<Map<String, String>> handleNotFoundException(NotFoundException ex) {
-//        log.debug("Not found error: {}", ex.getMessage());
-//        Map<String, String> errorResponse = new HashMap<>();
-//        errorResponse.put(ERROR, "Not Found");
-//        errorResponse.put(MESSAGE, ex.getMessage());
-//        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-//    }
-
     @ExceptionHandler({ValidationException.class})
     public ResponseEntity<Map<String, String>> handleValidationException(ValidationException ex) {
         log.debug("Validation error: {}", ex.getMessage());
@@ -44,15 +35,6 @@ public class ErrorHandler {
         errorResponse.put(MESSAGE, ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
-
-//    @ExceptionHandler({AuthentificationException.class})
-//    public ResponseEntity<Map<String, String>> handleArgumentException(AuthentificationException ex) {
-//        log.debug("Authentification error: {}", ex.getMessage());
-//        Map<String, String> errorResponse = new HashMap<>();
-//        errorResponse.put(ERROR, "Authentification error");
-//        errorResponse.put(MESSAGE, ex.getMessage());
-//        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
-//    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneralException(Exception ex) {

@@ -46,15 +46,4 @@ public class ItemMapper {
                 .request(oldItem.getRequest())
                 .build();
     }
-
-    public Item map(ItemDto item, User owner) {
-        return Item.builder()
-                .id(item.getId())
-                .owner(owner)
-                .name(item.getName())
-                .description(item.getDescription())
-                .available(item.getAvailable())
-                .request(item.getRequest())
-                .build();
-    }
 }

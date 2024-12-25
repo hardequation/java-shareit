@@ -9,8 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.BookingService;
+import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.CreateBookingDto;
+import ru.practicum.shareit.exception.AuthentificationException;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.WrongRequirementsException;
 import ru.practicum.shareit.item.dal.ItemRepository;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CreateCommentDto;
 import ru.practicum.shareit.item.dto.CreateItemDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
@@ -19,6 +26,8 @@ import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.dto.CreateUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,6 +53,9 @@ class ItemServiceTest {
     private ItemRepository itemRepository;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private BookingService bookingService;
     @Autowired
     private ItemService itemService;
 
@@ -110,6 +122,17 @@ class ItemServiceTest {
     }
 
     @Test
+    void createByNonExistingUser() {
+        CreateItemDto toCreate = CreateItemDto.builder()
+                .name("Item1")
+                .description("Some description")
+                .available(true)
+                .build();
+
+        assertThrows(NotFoundException.class, () -> itemService.create(999L, toCreate));
+    }
+
+    @Test
     void update() {
         CreateItemDto itemDto = CreateItemDto.builder()
                 .name("Item1")
@@ -131,6 +154,42 @@ class ItemServiceTest {
         assertEquals(updated.getName(), item.getName());
         assertEquals(updated.getAvailable(), item.getAvailable());
         assertEquals(updated.getDescription(), item.getDescription());
+    }
+
+    @Test
+    void updateNotByOwner() {
+        CreateItemDto itemDto = CreateItemDto.builder()
+                .name("Item1")
+                .description("Some description")
+                .available(true)
+                .build();
+
+        UpdateItemDto toUpdate = UpdateItemDto.builder()
+                .name("new Name")
+                .description("new description")
+                .available(true)
+                .build();
+
+        ItemDto createdItemDto = itemService.create(user1.getId(), itemDto);
+        assertThrows(AuthentificationException.class, () -> itemService.update(user2.getId(), createdItemDto.getId(), toUpdate));
+    }
+
+    @Test
+    void updateByNotExistingUser() {
+        CreateItemDto itemDto = CreateItemDto.builder()
+                .name("Item1")
+                .description("Some description")
+                .available(true)
+                .build();
+
+        UpdateItemDto toUpdate = UpdateItemDto.builder()
+                .name("new Name")
+                .description("new description")
+                .available(true)
+                .build();
+
+        ItemDto createdItemDto = itemService.create(user1.getId(), itemDto);
+        assertThrows(NotFoundException.class, () -> itemService.update(999L, createdItemDto.getId(), toUpdate));
     }
 
     @Test
@@ -183,4 +242,104 @@ class ItemServiceTest {
         assertEquals(item1.getDescription(), foundItem.getDescription());
         assertThrows(NotFoundException.class, () -> itemService.findById(999L));
     }
+
+    @Test
+    void deleteById() {
+        CreateItemDto itemDto = CreateItemDto.builder()
+                .name("Item1")
+                .description("Some description")
+                .available(true)
+                .build();
+
+        ItemDto createdItemDto = itemService.create(user1.getId(), itemDto);
+        assertNotNull(itemService.findById(createdItemDto.getId()));
+        ;
+
+        itemService.deleteById(createdItemDto.getId());
+        assertThrows(NotFoundException.class, () -> itemService.findById(createdItemDto.getId()));
+    }
+
+    @Test
+    void deleteNotExistingItem() {
+        assertThrows(NotFoundException.class, () -> itemService.deleteById(999L));
+    }
+
+    @Test
+    void searchBlank() {
+        assertEquals(Collections.emptyList(), itemService.search(" "));
+    }
+
+    @Test
+    void searchSuccess() {
+        CreateItemDto itemMissing = CreateItemDto.builder()
+                .name("Item3")
+                .description("Another description3")
+                .available(true)
+                .build();
+        ItemDto itemDto = itemService.create(user3.getId(), itemMissing);
+
+        List<ItemDto> searchResult = itemService.search("some");
+
+        assertEquals(3, searchResult.size());
+    }
+
+    @Test
+    void commentItem() {
+        CreateBookingDto toCreate = CreateBookingDto.builder()
+                .itemId(item1.getId())
+                .start(LocalDateTime.now().minusDays(15))
+                .end(LocalDateTime.now().minusDays(7))
+                .build();
+
+        BookingDto bookingDto = bookingService.create(toCreate, user1.getId());
+        bookingService.processBooking(item1.getOwner(), bookingDto.getId(), true);
+
+        CreateCommentDto commentDto = CreateCommentDto.builder()
+                .text("Good comment")
+                .build();
+
+        CommentDto createdComment = itemService.commentItem(user1.getId(), item1.getId(), commentDto);
+
+        assertEquals(item1.getId(), createdComment.getItem());
+        assertEquals(user1.getName(), createdComment.getAuthorName());
+        assertEquals("Good comment", createdComment.getText());
+    }
+
+    @Test
+    void commentNotExistingItem() {
+        CreateBookingDto toCreate = CreateBookingDto.builder()
+                .itemId(item1.getId())
+                .start(LocalDateTime.now().minusDays(15))
+                .end(LocalDateTime.now().minusDays(7))
+                .build();
+
+        BookingDto bookingDto = bookingService.create(toCreate, user1.getId());
+        bookingService.processBooking(item1.getOwner(), bookingDto.getId(), true);
+
+        CreateCommentDto commentDto = CreateCommentDto.builder()
+                .text("Good comment")
+                .build();
+
+        assertThrows(NotFoundException.class, () -> itemService.commentItem(user1.getId(), 999L, commentDto));
+    }
+
+    @Test
+    void commentRejectedBooking() {
+        CreateBookingDto toCreate = CreateBookingDto.builder()
+                .itemId(item1.getId())
+                .start(LocalDateTime.now().minusDays(15))
+                .end(LocalDateTime.now().minusDays(7))
+                .build();
+
+        BookingDto bookingDto = bookingService.create(toCreate, user1.getId());
+        bookingService.processBooking(item1.getOwner(), bookingDto.getId(), false);
+
+        CreateCommentDto commentDto = CreateCommentDto.builder()
+                .text("Good comment")
+                .build();
+
+        assertThrows(WrongRequirementsException.class, () -> itemService.commentItem(user1.getId(), item1.getId(), commentDto));
+    }
+
+
 }

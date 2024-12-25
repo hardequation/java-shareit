@@ -24,8 +24,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("SELECT it " +
             "FROM Item as it " +
             "WHERE it.available = true " +
-            "AND (UPPER(it.name) LIKE UPPER(?1) " +
-            "OR UPPER(it.description) LIKE UPPER(?1))")
+            "AND (UPPER(it.name) LIKE UPPER(CONCAT('%', ?1, '%')) " +
+            "OR UPPER(it.description) LIKE UPPER(CONCAT('%', ?1, '%')))")
     List<Item> search(String value);
 
     void deleteById(Long id);
