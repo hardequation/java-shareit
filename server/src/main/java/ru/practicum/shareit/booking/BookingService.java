@@ -35,7 +35,7 @@ public class BookingService {
 
     private final BookingMapper bookingMapper;
 
-    public BookingDto save(CreateBookingDto dto, Long userId) {
+    public BookingDto create(CreateBookingDto dto, Long userId) {
         if (!dto.getStart().isBefore(dto.getEnd())) {
             throw new WrongRequirementsException("Start date of booking should be before end date");
         }

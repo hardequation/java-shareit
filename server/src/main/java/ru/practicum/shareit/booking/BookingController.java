@@ -32,7 +32,7 @@ public class BookingController {
     BookingDto createBooking(
             @RequestHeader(HEADER_USER_PARAMETER) long bookerId,
             @RequestBody CreateBookingDto dto) {
-        return bookingService.save(dto, bookerId);
+        return bookingService.create(dto, bookerId);
     }
 
     @PatchMapping("/{bookingId}")

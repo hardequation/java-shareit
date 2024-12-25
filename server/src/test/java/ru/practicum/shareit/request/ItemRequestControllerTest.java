@@ -60,7 +60,7 @@ class ItemRequestControllerTest {
 
     @Test
     void createItemRequest() throws Exception {
-        when(service.save(eq(1L), any(CreateItemRequestDto.class))).thenReturn(requestDto);
+        when(service.create(eq(1L), any(CreateItemRequestDto.class))).thenReturn(requestDto);
 
         mvc.perform(post("/requests")
                         .header("X-Sharer-User-Id", 1L)

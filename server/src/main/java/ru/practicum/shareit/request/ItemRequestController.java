@@ -38,7 +38,7 @@ public class ItemRequestController {
     @ResponseStatus(HttpStatus.CREATED)
     public ItemRequestDto create(@RequestHeader(HEADER_USER_PARAMETER) Long userId,
                                  @RequestBody CreateItemRequestDto dto) {
-        return service.save(userId, dto);
+        return service.create(userId, dto);
     }
 
     @GetMapping

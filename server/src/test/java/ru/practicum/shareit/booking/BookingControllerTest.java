@@ -76,7 +76,7 @@ public class BookingControllerTest {
 
     @Test
     void createBooking() throws Exception {
-        when(bookingService.save(any(CreateBookingDto.class), eq(2L)))
+        when(bookingService.create(any(CreateBookingDto.class), eq(2L)))
                 .thenReturn(resultDto);
 
         mvc.perform(post("/bookings")

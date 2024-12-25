@@ -33,6 +33,15 @@ public class ItemRequestService {
 
     private final ItemMapper itemMapper;
 
+    public ItemRequestDto create(Long userId, CreateItemRequestDto dto) {
+        if (userRepository.findById(userId).isEmpty()) {
+            throw new AuthentificationException(NOT_AUTHENTICATED_USER);
+        }
+        Request request = requestMapper.map(userId, dto);
+        Request newRequest = requestRepository.save(request);
+        return requestMapper.map(newRequest, null);
+    }
+
     public ItemRequestDto findById(Long userId, Long requestId) {
         if (userRepository.findById(userId).isEmpty()) {
             throw new AuthentificationException(NOT_AUTHENTICATED_USER);
@@ -67,15 +76,6 @@ public class ItemRequestService {
                     return requestMapper.map(request, items.stream().map(itemMapper::map).toList());
                 })
                 .toList();
-    }
-
-    public ItemRequestDto save(Long userId, CreateItemRequestDto dto) {
-        if (userRepository.findById(userId).isEmpty()) {
-            throw new AuthentificationException(NOT_AUTHENTICATED_USER);
-        }
-        Request request = requestMapper.map(userId, dto);
-        Request newRequest = requestRepository.save(request);
-        return requestMapper.map(newRequest, null);
     }
 
     public void deleteById(Long requestId) {
