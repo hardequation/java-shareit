@@ -1,13 +1,9 @@
 package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.AuthentificationException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.ItemMapper;
-import ru.practicum.shareit.item.dal.ItemRepository;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dal.ItemRequestRepository;
 import ru.practicum.shareit.request.dto.CreateItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -27,11 +23,9 @@ public class ItemRequestService {
 
     private final ItemRequestMapper requestMapper;
 
+//    private final ItemMapper itemMapper;
+
     private final UserRepository userRepository;
-
-    private final ItemRepository itemRepository;
-
-    private final ItemMapper itemMapper;
 
     public ItemRequestDto create(Long userId, CreateItemRequestDto dto) {
         if (userRepository.findById(userId).isEmpty()) {
@@ -39,7 +33,7 @@ public class ItemRequestService {
         }
         Request request = requestMapper.map(userId, dto);
         Request newRequest = requestRepository.save(request);
-        return requestMapper.map(newRequest, null);
+        return requestMapper.map(newRequest);
     }
 
     public ItemRequestDto findById(Long userId, Long requestId) {
@@ -47,9 +41,10 @@ public class ItemRequestService {
             throw new AuthentificationException(NOT_AUTHENTICATED_USER);
         }
         Request request = requestRepository.findById(requestId).orElseThrow(() -> new NotFoundException(REQUEST_NOT_FOUND + requestId));
-        List<Item> items = itemRepository.getByRequest(request.getId(), Sort.by("id").descending());
-
-        return requestMapper.map(request, items.stream().map(itemMapper::map).toList());
+//        List<ItemDto> items = request.getItems().stream()
+//                .map(itemMapper::map)
+//                .toList();
+        return requestMapper.map(request);
     }
 
     public List<ItemRequestDto> findByRequester(Long userId) {
@@ -58,10 +53,7 @@ public class ItemRequestService {
         }
         List<Request> requests = requestRepository.findByRequestor(userId);
         return requests.stream()
-                .map(request -> {
-                    List<Item> items = itemRepository.getByRequest(request.getId(), Sort.by("id").descending());
-                    return requestMapper.map(request, items.stream().map(itemMapper::map).toList());
-                })
+                .map(requestMapper::map)
                 .toList();
     }
 
@@ -71,10 +63,7 @@ public class ItemRequestService {
         }
         List<Request> requests = requestRepository.findAll();
         return requests.stream()
-                .map(request -> {
-                    List<Item> items = itemRepository.getByRequest(request.getId(), Sort.by("id").descending());
-                    return requestMapper.map(request, items.stream().map(itemMapper::map).toList());
-                })
+                .map(requestMapper::map)
                 .toList();
     }
 
